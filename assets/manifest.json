@@ -1,0 +1,30 @@
+[
+    {
+        "berkas":  "ding-sukses.mp3",
+        "jenis":  "audio/mpeg",
+        "ukuran_kb":  22.5,
+        "sumber":  "Pixaby",
+        "lisensi":  "FREE"
+    },
+    {
+        "berkas":  "ikon-anggota.svg",
+        "jenis":  "image/svg+xml",
+        "ukuran_kb":  0.4,
+        "sumber":  "Vecteezy",
+        "lisensi":  "FREE"
+    },
+    {
+        "berkas":  "ikon-hasil.svg",
+        "jenis":  "image/svg+xml",
+        "ukuran_kb":  0.4,
+        "sumber":  "Magnific",
+        "lisensi":  "FREE"
+    },
+    {
+        "berkas":  "ikon-tugas.svg",
+        "jenis":  "image/svg+xml",
+        "ukuran_kb":  0.4,
+        "sumber":  "Magnific",
+        "lisensi":  "FREE"
+    }
+]
