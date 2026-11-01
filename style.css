@@ -169,7 +169,7 @@ input.salah, select.salah {
   margin-bottom: 6px;
 }
 
-.grup-atas h3 { flex: 1; margin: 0; font-size: 1.1rem; }
+.grup-atas h3 { flex: 1; min-width: 0; overflow-wrap: anywhere; margin: 0; font-size: 1.1rem; }
 
 .lencana {
   padding: 2px 10px;
