@@ -1,8 +1,6 @@
-// ui-pustaka.js — SATU-SATUNYA berkas yang memanggil JavaScript Bootstrap.
-// Berkas lain cukup memanggil tampilkanToast('pesan').
+// ui-pustaka.js — Integrasi Toast Bootstrap
 
-function tampilkanToast(pesan) {
-  // Kalau Bootstrap gagal dimuat (misalnya internet mati), lewati saja
+export function tampilkanToast(pesan) {
   if (typeof bootstrap === 'undefined') return;
 
   const el = document.getElementById('toast-info');
