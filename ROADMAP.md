@@ -10,31 +10,12 @@
 - [x] Aset: aset/ menjadi assets/, nama berkas seragam, manifest.json dibuat
 - [x] Network tanpa 404
 
-# ROADMAP - TaskSplit
+## Sprint 3 - Modularisasi dengan ES Modules (selesai)
+- [x] Cabang refactor/modul, satu commit refactor: per langkah, lalu digabung ke main
+- [x] script.js dipecah menjadi 4 modul ES di src/ (main, state, ui, ui-pustaka)
+- [x] Tanpa variabel global aplikasi dan tanpa onclick
+- [x] Alur MVP sebelum dan sesudah refactor: perilaku sama
+- [x] MODULE_MAP.md dibuat
 
-## Sprint 1 - Prototipe dan Pustaka UI (selesai)
-- [x] Prototipe terpadu 3 tampilan: Anggota, Bagi Tugas, Hasil (Tugas 4)
-- [x] Pasang Bootstrap 5.3.3 lewat ui-pustaka.js: navBerikut adalah refactor lengkap untuk **TaskSplit** sesuai dengan berkas asli dan repositori kamu (`ppv-project-akhir-5125500053`).
-
----
-
-### 1. Struktur Folder Baru di `ppv-project-akhir-5125500053`
-
-Buat folder baru bernama **`src`** di dalam repositori kamu, sehingga susunan berkasnya menjadi:
-
-```text
-ppv-project-akhir-5125500053/
-├── assets/
-│   ├── ding-sukses.mp3
-│   └── manifest.json
-├── docs/
-├── src/
-│   ├── state.js
-│   ├── ui-pustaka.js
-│   ├── ui.js
-│   └── main.js
-├── index.html
-├── style.css
-├── MODULE_MAP.md
-├── README.md
-└── ROADMAP.md
+## Tertunda
+- Bagian yang belum dimodulkan: lihat MODULE_MAP.md.

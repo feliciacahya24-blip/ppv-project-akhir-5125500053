@@ -1,24 +1,36 @@
-# Peta Modul TaskSplit (PPV Final Project - Sprint 3)
+# MODULE_MAP - TaskSplit
 
-## Hubungan Import Modul
-- `src/main.js` -> mengimpor `src/state.js`, `src/ui.js`, dan `src/ui-pustaka.js`
-- `src/ui.js` -> mengimpor `src/state.js`
-- `src/ui-pustaka.js` -> mengisolasi panggilan Toast Bootstrap
-- `src/state.js` -> mengelola data utama aplikasi (bebas DOM)
+Peta modul ES di folder `src/`. Titik masuk: `src/main.js`, dimuat lewat `<script type="module">` di `index.html`.
 
-## Pembagian Tanggung Jawab Modul
+## Peta import (satu arah, tanpa melingkar)
 
-1. **`src/state.js`**
-   - Menyimpan data state utama (`anggota`, `tugas`, `sedangMemuat`).
-   - Menyediakan fungsi penambahan/penghapusan data dan helper tanggal.
-   - **Bebas DOM** (tidak memanggil `document`, `window`, atau elemen UI).
+```mermaid
+graph TD
+  main[main.js] --> state[state.js]
+  main --> ui[ui.js]
+  main --> pustaka[ui-pustaka.js]
+  ui --> state
+```
 
-2. **`src/ui.js`**
-   - Mengurus render elemen HTML, animasi (`animate`, `getar`), perpindahan tab (`pindahTampilan`), dan kelas CSS error.
+Versi teks:
+```
+main.js       -> state.js, ui.js, ui-pustaka.js
+ui.js         -> state.js
+state.js      -> (tidak mengimpor apa pun)
+ui-pustaka.js -> (tidak mengimpor apa pun; memakai `bootstrap` dari skrip CDN)
+```
 
-3. **`src/ui-pustaka.js`**
-   - Mengisolasi pemanggilan pustaka eksternal (Bootstrap Toast).
+## Tanggung jawab per modul
+| Modul | Satu kalimat |
+|---|---|
+| `main.js` | Titik masuk yang memasang semua event, menjalankan validasi form, dan mengatur bunyi, lalu menghubungkan modul lain. |
+| `state.js` | Menyimpan data aplikasi (anggota, tugas, penanda memuat) beserta fungsi mengubahnya, tanpa menyentuh DOM. |
+| `ui.js` | Menggambar tampilan, pindah tab, menampilkan atau menghapus pesan error, dan menjalankan animasinya. |
+| `ui-pustaka.js` | Pembungkus Bootstrap Toast; satu-satunya berkas yang memanggil JavaScript Bootstrap. |
 
-4. **`src/main.js`**
-   - Titik masuk aplikasi (`type="module"`).
-   - Menghubungkan seluruh *event listener* (`submit`, `click`, `input`, `change`, `keydown`) dan feedback audio.
+## Bagian yang belum dimodulkan
+- Fitur bunyi (tombol Suara, `mainkanSuara`) masih di `main.js` karena kodenya kecil dan hanya dipakai di sana; dipisah ke modul sendiri bisa dilakukan di sprint berikutnya.
+- Validasi form masih di dalam handler `submit` di `main.js`; memisahkannya berarti mengubah alur kode, sedangkan sprint ini menjaga perilaku tetap sama.
+- Fungsi bantu `hariIni`, `formatTanggal`, dan `amankan` masih berada di `state.js`; memindahkannya ke modul `util.js` ditunda agar jumlah perubahan tetap kecil.
+- Bootstrap dan Google Fonts tetap dimuat lewat tag `<script>` dan `<link>` di `index.html` karena berupa pustaka CDN, bukan kode aplikasi.
+- Tidak ada modul penyimpanan karena aplikasi belum memakai localStorage.
