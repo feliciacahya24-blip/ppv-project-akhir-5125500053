@@ -1,13 +1,28 @@
 // state.js — Logika & State Aplikasi TaskSplit (Bebas DOM)
+import { muat, simpan } from './storage.js';
 
 const warnaAnggota = ['#513229', '#8A5A44', '#5F6F3E', '#9A6B2F', '#3E6D94', '#8C4A4A', '#57646B', '#7A4F2B'];
 
+function warnaUntuk(id) {
+  return warnaAnggota[id % warnaAnggota.length];
+}
+
+const awal = muat();
+
 export const state = {
-  anggota: [],
-  tugas: [],
-  idBerikut: 1,
+  anggota: awal.anggota.map((a) => ({ id: a.id, nama: a.nama, warna: warnaUntuk(a.id) })),
+  tugas: awal.tugas,
+  idBerikut: awal.idBerikut,
   sedangMemuat: false
 };
+
+// Menyimpan anggota dan tugas (warna dan status memuat tidak ikut disimpan)
+function simpanSemua() {
+  simpan({
+    anggota: state.anggota.map((a) => ({ id: a.id, nama: a.nama })),
+    tugas: state.tugas
+  });
+}
 
 export function hariIni() {
   const t = new Date();
@@ -22,10 +37,6 @@ export function formatTanggal(teks) {
   });
 }
 
-export function amankan(teks) {
-  return teks.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-}
-
 export function hitungTugas(idAnggota) {
   return state.tugas.filter(t => t.anggotaId === idAnggota).length;
 }
@@ -34,15 +45,17 @@ export function tambahAnggota(nama) {
   const anggotaBaru = {
     id: state.idBerikut,
     nama: nama,
-    warna: warnaAnggota[state.idBerikut % warnaAnggota.length]
+    warna: warnaUntuk(state.idBerikut)
   };
   state.anggota.push(anggotaBaru);
   state.idBerikut++;
+  simpanSemua();
   return anggotaBaru;
 }
 
 export function hapusAnggota(id) {
   state.anggota = state.anggota.filter(x => x.id !== id);
+  simpanSemua();
 }
 
 export function tambahTugas(nama, deadline, idAnggota) {
@@ -54,9 +67,11 @@ export function tambahTugas(nama, deadline, idAnggota) {
   };
   state.tugas.push(tugasBaru);
   state.idBerikut++;
+  simpanSemua();
   return tugasBaru;
 }
 
 export function hapusTugas(id) {
   state.tugas = state.tugas.filter(t => t.id !== id);
+  simpanSemua();
 }
