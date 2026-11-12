@@ -1,6 +1,7 @@
 // ui.js — Manipulasi DOM & Animasi Tampilan TaskSplit
-
-import { state, amankan, hitungTugas, formatTanggal, hariIni } from './state.js';
+import { state, hitungTugas } from './state.js';
+import { pesanStatus } from './storage.js';
+import { ChipAnggota, GrupAnggota, KartuKosong, PesanSamar } from './komponen.js';
 
 const kurangiGerak = window.matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -64,31 +65,27 @@ export function hapusError(kolom, tempatPesan) {
   kolom.classList.remove('salah');
 }
 
+// Memberi tahu pengguna kalau data rusak atau penyimpanan tidak tersedia
+function perbaruiStatusPenyimpanan() {
+  const el = document.getElementById('status-penyimpanan');
+  if (el) el.textContent = pesanStatus();
+}
+
 export function tampilkanAnggota(daftarAnggotaEl, pilihAnggotaEl, infoAnggotaEl) {
   if (state.anggota.length === 0) {
-    daftarAnggotaEl.innerHTML = '<p class="samar">Belum ada anggota.</p>';
+    daftarAnggotaEl.replaceChildren(PesanSamar('Belum ada anggota.'));
   } else {
-    let html = '';
-    state.anggota.forEach(a => {
-      html += `
-        <span class="chip">
-          <span class="avatar" style="background:${a.warna}">${amankan(a.nama.charAt(0).toUpperCase())}</span>
-          ${amankan(a.nama)}
-          <button type="button" class="hapus-anggota" data-id="${a.id}" title="Hapus anggota">×</button>
-        </span>`;
-    });
-    daftarAnggotaEl.innerHTML = html;
+    daftarAnggotaEl.replaceChildren(...state.anggota.map((a) => ChipAnggota(a)));
   }
   isiPilihan(pilihAnggotaEl, infoAnggotaEl);
 }
 
 export function isiPilihan(pilihAnggotaEl, infoAnggotaEl) {
   const dipilih = pilihAnggotaEl.value;
-  let html = '<option value="">Pilih anggota</option>';
-  state.anggota.forEach(a => {
-    html += `<option value="${a.id}">${amankan(a.nama)}</option>`;
-  });
-  pilihAnggotaEl.innerHTML = html;
+  pilihAnggotaEl.replaceChildren(
+    new Option('Pilih anggota', ''),
+    ...state.anggota.map((a) => new Option(a.nama, String(a.id)))
+  );
 
   const masihAda = state.anggota.some(a => String(a.id) === dipilih);
   pilihAnggotaEl.value = masihAda ? dipilih : '';
@@ -107,63 +104,52 @@ export function tampilkanInfo(pilihAnggotaEl, infoAnggotaEl) {
 }
 
 export function tampilkanHasil(hasilEl, idBaru) {
+  perbaruiStatusPenyimpanan();
+
   if (state.sedangMemuat) {
-    hasilEl.innerHTML = '<div class="memuat"><span class="spinner-border spinner-border-sm" aria-hidden="true"></span> Membagi tugas...</div>';
+    const memuat = document.createElement('div');
+    memuat.className = 'memuat';
+    const spinner = document.createElement('span');
+    spinner.className = 'spinner-border spinner-border-sm';
+    spinner.setAttribute('aria-hidden', 'true');
+    memuat.append(spinner, ' Membagi tugas...');
+    hasilEl.replaceChildren(memuat);
     return;
   }
 
   if (state.anggota.length === 0) {
-    hasilEl.innerHTML = `
-      <div class="kosong">
-        <h3>Belum ada anggota!</h3>
-        <p>Yuk, isi nama anggota kelompok & tugas mereka di sini. :)</p>
-        <button type="button" class="tombol" data-pindah="anggota">Ke halaman Anggota</button>
-      </div>`;
+    hasilEl.replaceChildren(KartuKosong({
+      judul: 'Belum ada anggota!',
+      teks: 'Yuk, isi nama anggota kelompok & tugas mereka di sini. :)',
+      label: 'Ke halaman Anggota',
+      tujuan: 'anggota'
+    }));
     return;
   }
   if (state.tugas.length === 0) {
-    hasilEl.innerHTML = `
-      <div class="kosong">
-        <h3>Belum ada pembagian tugas</h3>
-        <p>Isi form tugas baru, pilih anggota, lalu klik "Bagikan tugas".</p>
-        <button type="button" class="tombol" data-pindah="tugas">Ke halaman Tugas</button>
-      </div>`;
+    hasilEl.replaceChildren(KartuKosong({
+      judul: 'Belum ada pembagian tugas',
+      teks: 'Isi form tugas baru, pilih anggota, lalu klik "Bagikan tugas".',
+      label: 'Ke halaman Tugas',
+      tujuan: 'tugas'
+    }));
     return;
   }
 
-  let html = '';
-  state.anggota.forEach(a => {
-    const tugasAnggota = state.tugas.filter(t => t.anggotaId === a.id);
-    tugasAnggota.sort((x, y) => x.deadline.localeCompare(y.deadline));
-
-    html += `
-      <div class="grup">
-        <div class="grup-atas">
-          <span class="avatar" style="background:${a.warna}">${amankan(a.nama.charAt(0).toUpperCase())}</span>
-          <h3>${amankan(a.nama)}</h3>
-          <span class="lencana">${tugasAnggota.length} tugas</span>
-        </div>`;
-
-    if (tugasAnggota.length === 0) {
-      html += '<p class="samar">Belum dapat tugas.</p>';
-    }
-
-    tugasAnggota.forEach(t => {
-      const hariIniPersis = t.deadline === hariIni();
-      html += `
-        <div class="item-tugas" data-id="${t.id}">
-          <div>
-            <strong>${amankan(t.nama)}</strong>
-            <span class="deadline ${hariIniPersis ? 'hari-ini' : ''}">Deadline: ${formatTanggal(t.deadline)}${hariIniPersis ? ' (hari ini)' : ''}</span>
-          </div>
-          <button type="button" class="tombol-hapus" data-id="${t.id}">Hapus</button>
-        </div>`;
-    });
-
-    html += '</div>';
+  const semuaGrup = state.anggota.map((a) => {
+    const tugasAnggota = state.tugas
+      .filter((t) => t.anggotaId === a.id)
+      .sort((x, y) => x.deadline.localeCompare(y.deadline));
+    return GrupAnggota(a, tugasAnggota);
   });
-  html += '<button type="button" class="tombol tombol-besar" data-pindah="tugas">Tambah tugas lagi</button>';
-  hasilEl.innerHTML = html;
+
+  const tambahLagi = document.createElement('button');
+  tambahLagi.type = 'button';
+  tambahLagi.className = 'tombol tombol-besar';
+  tambahLagi.dataset.pindah = 'tugas';
+  tambahLagi.textContent = 'Tambah tugas lagi';
+
+  hasilEl.replaceChildren(...semuaGrup, tambahLagi);
 
   if (idBaru) {
     const kartuBaru = hasilEl.querySelector('.item-tugas[data-id="' + idBaru + '"]');
