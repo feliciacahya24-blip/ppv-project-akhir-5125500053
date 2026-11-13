@@ -17,5 +17,14 @@
 - [x] Alur MVP sebelum dan sesudah refactor: perilaku sama
 - [x] MODULE_MAP.md dibuat
 
+## Sprint 4 - Komponen, Penyimpanan Aman, dan Perawatan (selesai)
+- [x] src/komponen.js: 6 komponen reusable, teks pengguna lewat textContent
+- [x] src/storage.js: kunci berversi tasksplit:v1, muat() dan simpan() tidak pernah melempar galat
+- [x] Anggota dan tugas tersimpan dan kembali setelah dimuat ulang
+- [x] Uji data rusak (S2) dan penyimpanan penuh (S6): aplikasi tetap jalan dan pengguna diberi tahu
+- [x] README lengkap, CHANGELOG.md, dan tag v0.1.0 sampai v0.4.0
+
 ## Tertunda
-- Bagian yang belum dimodulkan: lihat MODULE_MAP.md.
+- Fitur bunyi dan validasi form belum dimodulkan: lihat MODULE_MAP.md.
+- Edit anggota dan tugas, serta ekspor hasil, belum ada.
+- Belum ada migrasi data antarversi kunci (saat ini hanya `tasksplit:v1`).
