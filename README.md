@@ -86,3 +86,4 @@ Dilakukan manual lewat DevTools. Bukti screenshot ada di laporan Tugas P12.
 - Sprint 4: kode `storage.js` dan `komponen.js`, perubahan `state.js`, `ui.js`, dan `index.html`, serta dokumen (README, CHANGELOG, ROADMAP, MODULE_MAP) dibantu Claude (Anthropic).
   Prompt: "oke sekarang kita lanjut ngerjain yang tasksplit tapi sebelum itu tolong jelasin aku harus ngerjain apa dan benerin apa terus disuruh apa"
 - Pengujian alur MVP dan skenario data rusak di peramban dilakukan sendiri.
+docs/konsep/index.html dan tampil.js berasal dari templat Tugas 7 (dosen); konsep.js ditulis sendiri.
